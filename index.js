@@ -16,10 +16,19 @@
 }(this, (function(exports) {
     'use strict';
 
-    fluidStorage = (p, t) => {
-        let prefixe = p || 'fs',
-            type = normalizeType(t)
+    let prefixe = '',
+        type = '';
 
+    /**
+     * Constructeur
+     */
+    exports.init = function(p, t) {
+        return new storage(p, t)
+    }
+
+    function storage(p, t) {
+        let prefixe = p,
+            type = normalizeType(t)
 
         /**
          * Recupere un element du store
@@ -28,106 +37,105 @@
          * @return {Object}
          */
         this.get = (key) => {
-                key = prefixe + '.' + key.replace('/^' + prefixe + '\./', '')
-                let data = null
+            key = prefixe + '.' + key.replace('/^' + prefixe + '\./', '')
+            let data = null
 
-                if (type === 'localstorage') {
-                    data = window.localStorage.getItem(key)
-                }
-                if (type === 'sessionstorage') {
-                    data = window.sessionStorage.getItem(key)
-                }
-                if (type === 'cookie') {
-                    data = getCookie(key)
-                }
+            if (type === 'localstorage') {
+                data = window.localStorage.getItem(key)
+            }
+            if (type === 'sessionstorage') {
+                data = window.sessionStorage.getItem(key)
+            }
+            if (type === 'cookie') {
+                data = getCookie(key)
+            }
 
-                if (empty(data)) {
-                    return null
-                }
-                data = JSON.parse(data)
-                let expire = data.expire || 0
+            if (empty(data)) {
+                return null
+            }
+            data = JSON.parse(data)
+            let expire = data.expire || 0
 
-                if (type !== 'cookie' && expire > 0 && (new Date().getTime() >= expire)) {
+            if (type !== 'cookie' && expire > 0 && (new Date().getTime() >= expire)) {
+                this.remove(key)
+                return null
+            }
+
+            return data.value || data
+        }
+
+        /**
+         * Ajoute un element en session
+         *
+         * @param {String} key
+         * @param {*} value
+         * @param {Integer} expire duree en minute de mise en session. Si non defini aucune limite n'est rajoutee
+         */
+        this.set = (key, value, expire) => {
+            key = prefixe + '.' + key.replace('/^' + prefixe + '\./', '')
+            expire = (!isNaN(parseInt(expire)) && isFinite(expire)) ? expire : 0
+
+            value = JSON.parse(JSON.stringify(value))
+            if (expire > 0) {
+                expire = new Date().getTime() + (expire * 60 * 1000)
+            }
+
+            let data = JSON.stringify({ value, expire })
+
+            if (type === 'localstorage') {
+                window.localStorage.setItem(key, data)
+            }
+            if (type === 'sessionstorage') {
+                window.sessionStorage.setItem(key, data)
+            }
+            if (type === 'cookie') {
+                setCookie(key, data, expire)
+            }
+        }
+
+        /**
+         * Retire un element de la session
+         *
+         * @param {String} key
+         */
+        this.remove = (key) => {
+            key = prefixe + '.' + key.replace('/^' + prefixe + '\./', '')
+            if (type === 'localstorage') {
+                window.localStorage.removeItem(key)
+            }
+            if (type === 'sessionstorage') {
+                window.sessionStorage.removeItem(key)
+            }
+            if (type === 'cookie') {
+                document.cookie = key + '=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC';
+            }
+        }
+
+        /**
+         * Vide toutes las variable de session de l'application
+         */
+        this.clear = () => {
+            const regex = new RegExp('/^' + prefixe + '\./')
+            let data = []
+
+            if (type === 'localstorage') {
+                data = window.localStorage
+            }
+            if (type === 'sessionstorage') {
+                data = window.sessionstorage
+            }
+            if (type === 'cookie') {
+                data = getCookies()
+            }
+
+            for (let key in data) {
+                if (regex.test(key)) {
                     this.remove(key)
-                    return null
-                }
-
-                return data.value || data
-            },
-
-            /**
-             * Ajoute un element en session
-             *
-             * @param {String} key
-             * @param {*} value
-             * @param {Integer} expire duree en minute de mise en session. Si non defini aucune limite n'est rajoutee
-             */
-            this.set = (key, value, expire) => {
-                key = prefixe + '.' + key.replace('/^' + prefixe + '\./', '')
-                expire = (!isNaN(parseInt(expire)) && isFinite(expire)) ? expire : 0
-
-                value = JSON.parse(JSON.stringify(value))
-                if (expire > 0) {
-                    expire = new Date().getTime() + (expire * 60 * 1000)
-                }
-
-                let data = JSON.stringify({ value, expire })
-
-                if (type === 'localStorage') {
-                    window.localStorage.setItem(key, data)
-                }
-                if (type === 'sessionstorage') {
-                    window.sessionStorage.setItem(key, data)
-                }
-                if (type === 'cookie') {
-                    setCookie(key, data, expire)
-                }
-            },
-
-            /**
-             * Retire un element de la session
-             *
-             * @param {String} key
-             */
-            this.remove = (key) => {
-                key = prefixe + '.' + key.replace('/^' + prefixe + '\./', '')
-                if (type === 'localstorage') {
-                    window.localStorage.removeItem(key)
-                }
-                if (type === 'sessionstorage') {
-                    window.sessionStorage.removeItem(key)
-                }
-                if (type === 'cookie') {
-                    document.cookie = key + '=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC';
-                }
-            },
-
-            /**
-             * Vide toutes las variable de session de l'application
-             */
-            this.clear = () => {
-                const regex = new RegExp('/^' + prefixe + '\./')
-                let data = []
-
-                if (type === 'localstorage') {
-                    data = window.localStorage
-                }
-                if (type === 'sessionstorage') {
-                    data = window.sessionstorage
-                }
-                if (type === 'cookie') {
-                    data = getCookies()
-                }
-
-                for (let key in data) {
-                    if (regex.test(key)) {
-                        this.remove(key)
-                    }
                 }
             }
-    }
+        }
 
-    exports = fluidStorage
+    }
 
 
     /**
