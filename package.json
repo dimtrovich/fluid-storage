@@ -1,0 +1,26 @@
+{
+    "name": "fluid-storage",
+    "version": "0.1.0",
+    "description": "A simple and fast client-side structured data storage interface",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/DimitriSitchet/fluid-storage.git"
+    },
+    "keywords": [
+        "localstorage",
+        "storage",
+        "sessionstorage",
+        "cookie",
+        "js"
+    ],
+    "author": "Dimitri Sitchet Tomkeu <devcode.dst@gmail.com>",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/DimitriSitchet/fluid-storage/issues"
+    },
+    "homepage": "https://github.com/DimitriSitchet/fluid-storage#readme"
+}
