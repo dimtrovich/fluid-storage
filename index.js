@@ -16,20 +16,21 @@
 }(this, (function(exports) {
     'use strict';
 
-    let prefixe = '',
-        type = '';
-
     /**
-     * Constructeur
+     * Initialisation du gestionnaire de stockage
+     *
+     * @param {String} prefixe prefixe a utiliser pour le nom des elements stockes
+     * @param {String} type type de stockage a utiliser
+     * @return {Stockage}
      */
-    exports.init = function(p, t) {
-        return new storage(p, t)
+    exports.init = function(prefixe, type) {
+        return new Stockage(prefixe || 'fs', normalizeType(type))
     }
 
-    function storage(p, t) {
+    function Stockage(p, t) {
         let prefixe = p,
-            type = normalizeType(t)
-
+            type = t
+			
         /**
          * Recupere un element du store
          *
@@ -99,7 +100,7 @@
          * @param {String} key
          */
         this.remove = (key) => {
-            key = prefixe + '.' + key.replace('/^' + prefixe + '\./', '')
+            key = prefixe + '.' + key.replace(prefixe + '\.', '')
             if (type === 'localstorage') {
                 window.localStorage.removeItem(key)
             }
@@ -115,14 +116,14 @@
          * Vide toutes las variable de session de l'application
          */
         this.clear = () => {
-            const regex = new RegExp('/^' + prefixe + '\./')
+            const regex = new RegExp('^' + prefixe + '\.')
             let data = []
 
             if (type === 'localstorage') {
                 data = window.localStorage
             }
             if (type === 'sessionstorage') {
-                data = window.sessionstorage
+                data = window.sessionStorage
             }
             if (type === 'cookie') {
                 data = getCookies()
