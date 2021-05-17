@@ -25,11 +25,15 @@ npm install fluid-storage
 Une fois le l'installation terminée, il ne vous reste plus qu'à utiliser les fonctions disponibles
 
 ```js
+// es6
 import fluidStorage from 'fluid-storage';
+
+// CJS
+const fluidStorage = require('fluid-storage')
 
 
 // Instantiation
-let storage = fluidStorage.init('prefixe', 'localstorage');
+let storage = new fluidStorage('prefixe', 'localstorage');
 
 ```
 

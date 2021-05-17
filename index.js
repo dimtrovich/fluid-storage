@@ -30,7 +30,11 @@
     function Stockage(p, t) {
         let prefixe = p,
             type = t
+<<<<<<< HEAD
 			
+=======
+
+>>>>>>> 066457a3f08ce4f87a8c97c6ba7407c0ed0f6780
         /**
          * Recupere un element du store
          *

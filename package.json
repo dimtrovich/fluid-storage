@@ -1,5 +1,16 @@
 {
+  "_from": "fluid-storage",
+  "_id": "fluid-storage@0.1.0",
+  "_inBundle": false,
+  "_integrity": "sha512-npeR2Sg5f2VqxGyqJNI8D9sIrDQcawjZYZg6gK2q5jKux5FOL9TJZyk/i4NlvQ5UTGp56GK1kHSpseJKj38cEA==",
+  "_location": "/fluid-storage",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "fluid-storage",
     "name": "fluid-storage",
+<<<<<<< HEAD
     "version": "0.1.0",
     "license": "MIT",
     "main": "index.js",
@@ -26,4 +37,48 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     }
+=======
+    "escapedName": "fluid-storage",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/fluid-storage/-/fluid-storage-0.1.0.tgz",
+  "_shasum": "c73f9ca0e44af8505cabcbec5b1013e73376e613",
+  "_spec": "fluid-storage",
+  "_where": "E:\\Codes-sources\\dimtrov.dev\\www\\ssm\\desktop",
+  "author": {
+    "name": "Dimitri Sitchet Tomkeu",
+    "email": "devcode.dst@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/DimitriSitchet/fluid-storage/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "A simple and fast client-side structured data storage interface",
+  "homepage": "https://github.com/DimitriSitchet/fluid-storage#readme",
+  "keywords": [
+    "localstorage",
+    "storage",
+    "sessionstorage",
+    "cookie",
+    "js"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "name": "fluid-storage",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DimitriSitchet/fluid-storage.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "0.1.0"
+>>>>>>> 066457a3f08ce4f87a8c97c6ba7407c0ed0f6780
 }
