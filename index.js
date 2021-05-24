@@ -200,9 +200,6 @@
     }
 
     /**
-     * FONCTIONS UTILITAIRES
-     */
-    /**
      *
      * @param {*} el
      * @return {Boolean}
