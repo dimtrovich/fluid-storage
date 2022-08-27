@@ -1,4 +1,4 @@
-# Fluid Storage : v0.1.1
+# Fluid Storage : v0.1.2
 
 ### A  simple and fast client-side structured data storage interface
 
@@ -78,7 +78,8 @@ console.log(storage.get('privileges')); // =>['ADD_DATA', 'REMOVE_DATA']
 ### Supprimer les données
 
 ```js
-storage.remove('userId');
+storage.remove('userId'); // Supprimer la clé userId du store
+storage.remove('userId', 'token'); // Supprimer les clés userId et token du store'
 ```
 
 ### Vider tout le storage
