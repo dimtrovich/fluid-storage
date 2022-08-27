@@ -1,5 +1,5 @@
 /**!
- * Fluid Storage v0.1.0 (https://github.com/DimitriSitchet/fluid-storage)
+ * Fluid Storage v0.1.0 (https://github.com/dimtrovich/fluid-storage)
  * Copyright 2021 Dimtrov Lab's | Dimitri Sitchet Tomkeu
  * Licensed under MIT (https://opensource.org/licences/mit)
  *
@@ -30,7 +30,7 @@
     function Stockage(p, t) {
         let prefixe = p,
             type = t
-			
+
         /**
          * Recupere un element du store
          *
@@ -66,11 +66,11 @@
         }
 
         /**
-         * Ajoute un element en session
+         * Ajoute un element au store
          *
          * @param {String} key
          * @param {*} value
-         * @param {Integer} expire duree en minute de mise en session. Si non defini aucune limite n'est rajoutee
+         * @param {Integer} expire duree en minute de mise en store. Si non defini aucune limite n'est rajoutee
          */
         this.set = (key, value, expire) => {
             key = prefixe + '.' + key.replace('/^' + prefixe + '\./', '')
@@ -95,21 +95,23 @@
         }
 
         /**
-         * Retire un element de la session
+         * Retire un ou plusieurs elements du store
          *
-         * @param {String} key
+         * @param {String[]}} keys
          */
-        this.remove = (key) => {
-            key = prefixe + '.' + key.replace(prefixe + '\.', '')
-            if (type === 'localstorage') {
-                window.localStorage.removeItem(key)
-            }
-            if (type === 'sessionstorage') {
-                window.sessionStorage.removeItem(key)
-            }
-            if (type === 'cookie') {
-                document.cookie = key + '=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC';
-            }
+        this.remove = (...keys) => {
+			for (let key in keys) {
+				key = prefixe + '.' + key.replace(prefixe + '\.', '')
+				if (type === 'localstorage') {
+					window.localStorage.removeItem(key)
+				}
+				if (type === 'sessionstorage') {
+					window.sessionStorage.removeItem(key)
+				}
+				if (type === 'cookie') {
+					document.cookie = key + '=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC';
+				}
+			}
         }
 
         /**
