@@ -1,4 +1,4 @@
-# Fluid Storage : v0.1.2
+# Fluid Storage : v0.1.3
 
 ### A  simple and fast client-side structured data storage interface
 

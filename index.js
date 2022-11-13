@@ -100,7 +100,7 @@
          * @param {String[]}} keys
          */
         this.remove = (...keys) => {
-			for (let key in keys) {
+			for (let key of keys) {
 				key = prefixe + '.' + key.replace(prefixe + '\.', '')
 				if (type === 'localstorage') {
 					window.localStorage.removeItem(key)
