@@ -9,39 +9,42 @@ export default defineConfig([
   	{
     	input: 'src/index.ts',
     	output: [
-			{
+      		{
 				file: 'dist/index.cjs.js',
 				format: 'cjs',
-				exports: 'auto'
-			},
-			{
+				exports: 'auto',
+				sourcemap: true
+      		},
+      		{
 				file: 'dist/index.esm.js',
-				format: 'esm'
-			},
+				format: 'esm',
+				sourcemap: true
+      		},
 			{
 				file: 'dist/index.umd.js',
 				format: 'umd',
-				name: 'fluidStorage'
+				name: 'fluidStorage',
+				sourcemap: true
 			}
     	],
     	plugins: [
       		resolve({
-        		browser: true, // Important pour le support navigateur
-        		preferBuiltins: false // Important pour éviter les problèmes avec les modules Node.js
+        		browser: true,
+        		preferBuiltins: false
       		}),
       		commonjs(),
       		typescript({
         		tsconfig: './tsconfig.json',
-        		exclude: ['**/*.test.ts', '**/*.spec.ts'], // Exclure les fichiers de test
-				declaration: false,
+        		exclude: ['**/*.test.ts', '**/*.spec.ts', 'tests/**', 'examples/**'],
+        		declaration: false,
         		declarationMap: false,
       		}),
       		terser()
     	]
   	},
   	{
-    	input: 'src/index.ts',
-    	output: [{ file: 'types/index.d.ts', format: 'esm' }],
-    	plugins: [dts()]
+    	input: 'types/index.d.ts',
+    	output: [{ file: 'dist/index.d.ts', format: 'esm' }],
+    	plugins: [dts()],
   	}
 ]);

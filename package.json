@@ -1,21 +1,37 @@
 {
   "name": "fluid-storage",
   "version": "1.0.0",
-  "license": "MIT",
+  "description": "A simple and fast client-side structured data storage interface",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "unpkg": "dist/index.umd.js",
-  "types": "./types/index.d.ts",
-  "typings": "./types/index.d.ts",
-  "author": {
-    "name": "Dimitri Sitchet Tomkeu",
-    "email": "devcode.dst@gmail.com"
+  "jsdelivr": "dist/index.umd.js",
+  "types": "dist/index.d.ts",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.cjs.js",
+      "default": "./dist/index.esm.js"
+    },
+    "./package.json": "./package.json"
   },
-  "bugs": {
-    "url": "https://github.com/dimtrovich/fluid-storage/issues"
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "jest",
+    "test:cov": "jest --coverage",
+    "test:verbose": "jest --verbose",
+    "test:watch": "jest --watch",
+    "prepublishOnly": "npm run build && npm test",
+    "prepack": "npm run build",
+	"check-publish": "npm pack --dry-run",
+    "list-files": "npm pack --dry-run 2>/dev/null | head -n 10"
   },
-  "description": "A simple and fast client-side structured data storage interface",
-  "homepage": "https://github.com/dimtrovich/fluid-storage#readme",
   "keywords": [
     "localstorage",
     "storage",
@@ -24,22 +40,19 @@
     "js",
     "typescript"
   ],
+  "author": {
+    "name": "Dimitri Sitchet Tomkeu",
+    "email": "devcode.dst@gmail.com"
+  },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dimtrovich/fluid-storage.git"
   },
-  "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
-    "example:esm": "node -e \"import('./examples/esm-usage.js').then(m => console.log('ESM example completed'))\"",
-    "example:commonjs": "node examples/commonjs-usage.js",
-    "example:browser": "echo 'Open examples/browser-example.html in your browser'",
-    "examples": "npm run example:commonjs && npm run example:esm",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:verbose": "jest --verbose"
+  "bugs": {
+    "url": "https://github.com/dimtrovich/fluid-storage/issues"
   },
+  "homepage": "https://github.com/dimtrovich/fluid-storage#readme",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^28.0.6",
     "@rollup/plugin-node-resolve": "^16.0.1",
