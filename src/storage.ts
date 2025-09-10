@@ -167,17 +167,11 @@ export class StorageCore implements FluidStorageCore
 		}
 	}
 
-	protected empty(value: any): boolean {
-		if (value === null || value === undefined) {
+	protected empty(el: any): boolean {
+		if (typeof el === 'undefined' || el === null) {
 			return true;
 		}
-		if (typeof value === 'string' && value === '') {
-			return true;
-		}
-		if (Array.isArray(value) && value.length === 0) {
-			return true;
-		}
-		if (typeof value === 'object' && Object.keys(value).length === 0) {
+		if ((typeof el === 'string' || el instanceof String) && el === '') {
 			return true;
 		}
 		return false;

@@ -159,7 +159,21 @@ export class StorageUtils extends StorageCore implements FluidStorageUtils
 	}
 
 	public isEmpty(key: string): boolean {
-		return this.empty(this.get(key));
+		const data = this.get(key);
+
+		// Vérifier si c'est un objet StorageData avec value et expire
+		const isStorageData = (
+			typeof data === 'object' &&
+			data !== null &&
+			'value' in data &&
+			'expire' in data &&
+			Object.keys(data).length === 2
+		);
+
+		// Si c'est un StorageData, utiliser la valeur
+		const valueToCheck = isStorageData ? data.value : data;
+
+		return this.isEmptyValue(valueToCheck);
 	}
 
 	public isNotEmpty(key: string): boolean {
@@ -167,7 +181,7 @@ export class StorageUtils extends StorageCore implements FluidStorageUtils
 	}
 
 	public count(): number {
-		return Object.keys(this.getAll()).length;
+		return this.keys().length;
 	}
 
 	public keys(): string[] {
@@ -242,5 +256,21 @@ export class StorageUtils extends StorageCore implements FluidStorageUtils
 
 		const newExpire = Math.max(0, currentExpire - minutes);
 		return this.expire(key, newExpire);
+	}
+
+	protected isEmptyValue(value: any): boolean {
+		if (value === null || value === undefined) {
+			return true;
+		}
+		if (typeof value === 'string' && value === '') {
+			return true;
+		}
+		if (Array.isArray(value) && value.length === 0) {
+			return true;
+		}
+		if (typeof value === 'object' && Object.keys(value).length === 0) {
+			return true;
+		}
+		return false;
 	}
 }
