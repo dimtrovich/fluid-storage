@@ -19,6 +19,6 @@
 		"allowJs": true,
 		"checkJs": false
 	},
-  	"include": ["src/**/*"],
+  	"include": ["src/**/*", "examples"],
   	"exclude": ["node_modules", "dist", "**/*.test.ts", "**/*.spec.ts"]
 }

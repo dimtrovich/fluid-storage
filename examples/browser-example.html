@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluid Storage - Exemple Navigateur</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .container { border: 1px solid #ddd; padding: 20px; margin: 10px 0; border-radius: 5px; }
+        button { margin: 5px; padding: 8px 12px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 4px; overflow: auto; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Fluid Storage - Démonstration</h1>
+
+    <div class="container">
+        <h2>Initialisation</h2>
+        <button onclick="initStorage()">Initialiser Fluid Storage</button>
+        <div id="initStatus">Non initialisé</div>
+    </div>
+
+    <div class="container">
+        <h2>Opérations de base</h2>
+        <button onclick="setData()">Stocker des données</button>
+        <button onclick="getData()">Récupérer des données</button>
+        <button onclick="checkData()">Vérifier l'existence</button>
+        <button onclick="removeData()">Supprimer des données</button>
+        <pre id="output"></pre>
+    </div>
+
+    <div class="container">
+        <h2>Méthodes avancées</h2>
+        <button onclick="testRemember()">Tester remember()</button>
+        <button onclick="testIncrement()">Tester increment()</button>
+        <button onclick="testUtilities()">Tester méthodes utilitaires</button>
+        <button onclick="clearAll()">Tout effacer</button>
+        <pre id="advancedOutput"></pre>
+    </div>
+
+    <div class="container">
+        <h2>Stockage multiple</h2>
+        <button onclick="showAllData()">Afficher tout le stockage</button>
+        <pre id="allData"></pre>
+    </div>
+
+    <script src="../dist/index.umd.js"></script>
+    <script>
+        let storage = null;
+
+        function log(message, elementId = 'output') {
+            const element = document.getElementById(elementId);
+            element.textContent = message + '\n' + element.textContent;
+        }
+
+        function initStorage() {
+            try {
+                storage = fluidStorage.init('demoApp', 'localstorage', 60);
+                log('✅ Fluid Storage initialisé avec succès!', 'initStatus');
+                log('Storage initialisé avec préfixe: demoApp');
+            } catch (error) {
+                log('❌ Erreur d\'initialisation: ' + error.message, 'initStatus');
+            }
+        }
+
+        function setData() {
+            if (!storage) {
+                log('Veuillez d\'abord initialiser le storage');
+                return;
+            }
+
+            storage.set('user', { name: 'Jean Dupont', email: 'jean@example.com' });
+            storage.set('settings', { theme: 'dark', notifications: true }, 1440); // 24h
+            storage.set('visits', 1);
+
+            log('✅ Données stockées:\n- user: objet utilisateur\n- settings: paramètres (expire dans 24h)\n- visits: compteur de visites');
+        }
+
+        function getData() {
+            if (!storage) {
+                log('Veuillez d\'abord initialiser le storage');
+                return;
+            }
+
+            const user = storage.get('user');
+            const settings = storage.get('settings');
+            const visits = storage.get('visits');
+
+            log('📦 Données récupérées:\n' +
+                JSON.stringify({ user, settings, visits }, null, 2));
+        }
+
+        function checkData() {
+            if (!storage) {
+                log('Veuillez d\'abord initialiser le storage');
+                return;
+            }
+
+            log('🔍 Vérifications:\n' +
+                '- user existe: ' + storage.has('user') + '\n' +
+                '- token existe: ' + storage.has('token') + '\n' +
+                '- settings expire: ' + storage.getExpire('settings') + ' minutes restantes');
+        }
+
+        function removeData() {
+            if (!storage) {
+                log('Veuillez d\'abord initialiser le storage');
+                return;
+            }
+
+            storage.remove('user');
+            log('🗑️ Utilisateur supprimé. Existe toujours: ' + storage.has('user'));
+        }
+
+        function testRemember() {
+            if (!storage) {
+                log('Veuillez d\'abord initialiser le storage', 'advancedOutput');
+                return;
+            }
+
+            const result = storage.remember('cachedData', () => {
+                log('⏳ Calcul des données en cache...', 'advancedOutput');
+                return {
+                    generated: new Date().toLocaleTimeString(),
+                    data: Array(5).fill(0).map((_, i) => `Item ${i + 1}`)
+                };
+            });
+
+            log('💾 Remember result: ' + JSON.stringify(result, null, 2), 'advancedOutput');
+        }
+
+        function testIncrement() {
+            if (!storage) {
+                log('Veuillez d\'abord initialiser le storage', 'advancedOutput');
+                return;
+            }
+
+            storage.set('counter', 10);
+            const newValue = storage.increment('counter', 5);
+            log('🔢 Increment: 10 + 5 = ' + newValue, 'advancedOutput');
+        }
+
+        function testUtilities() {
+            if (!storage) {
+                log('Veuillez d\'abord initialiser le storage', 'advancedOutput');
+                return;
+            }
+
+            storage.set('temp1', 'value1');
+            storage.set('temp2', 'value2');
+            storage.set('temp3', 'value3');
+
+            log('🛠️ Méthodes utilitaires:\n' +
+                '- only(temp1, temp3): ' + JSON.stringify(storage.only('temp1', 'temp3')) + '\n' +
+                '- except(temp2): ' + JSON.stringify(storage.except('temp2')) + '\n' +
+                '- count: ' + storage.count(), 'advancedOutput');
+
+            storage.remove('temp1', 'temp2', 'temp3');
+        }
+
+        function showAllData() {
+            if (!storage) {
+                log('Veuillez d\'abord initialiser le storage', 'allData');
+                return;
+            }
+
+            const allData = storage.getAll();
+            log('📊 Tout le stockage: ' + JSON.stringify(allData, null, 2), 'allData');
+        }
+
+        function clearAll() {
+            if (!storage) {
+                log('Veuillez d\'abord initialiser le storage', 'advancedOutput');
+                return;
+            }
+
+            storage.clear();
+            log('🧹 Tout le stockage a été effacé!', 'advancedOutput');
+            showAllData();
+        }
+
+        // Initialisation automatique au chargement
+        window.onload = initStorage;
+    </script>
+</body>
+</html>

@@ -31,6 +31,10 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
+    "example:esm": "node -e \"import('./examples/esm-usage.js').then(m => console.log('ESM example completed'))\"",
+    "example:commonjs": "node examples/commonjs-usage.js",
+    "example:browser": "echo 'Open examples/browser-example.html in your browser'",
+    "examples": "npm run example:commonjs && npm run example:esm",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
