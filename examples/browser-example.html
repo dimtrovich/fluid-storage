@@ -121,7 +121,7 @@
                 return;
             }
 
-            const result = storage.remember('cachedData', () => {
+            const result = storage.rememberSync('cachedData', () => {
                 log('⏳ Calcul des données en cache...', 'advancedOutput');
                 return {
                     generated: new Date().toLocaleTimeString(),

@@ -44,7 +44,8 @@ interface FluidStorageUtils {
     wrap(key: string, callback: (value: any) => any, expire?: number): any;
     increment(key: string, value?: number): number;
     decrement(key: string, value?: number): number;
-    remember(key: string, callback: () => any, expire?: number): any;
+    remember<T>(key: string, callback: () => Promise<T>, expire?: number): Promise<T>;
+    rememberSync(key: string, callback: () => any, expire?: number): any;
     pull(key: string): any;
     has(key: string): boolean;
     put(key: string, value: any, expire?: number): this;

@@ -57,10 +57,20 @@ describe('StorageUtils', () => {
 		expect(() => storage.increment('counter')).toThrow();
 	});
 
-	test('should remember value with callback', () => {
+	test('should remember value with callback', async () => {
+		const callback = jest.fn(async () => 'computed value');
+		const result1 = await storage.remember('key1', callback);
+		const result2 = await storage.remember('key1', callback);
+
+		expect(result1).toBe('computed value');
+		expect(result2).toBe('computed value');
+		expect(callback).toHaveBeenCalledTimes(1); // Should be cached
+	});
+
+	test('should remember value with callback (sync)', () => {
 		const callback = jest.fn(() => 'computed value');
-		const result1 = storage.remember('key1', callback);
-		const result2 = storage.remember('key1', callback);
+		const result1 = storage.rememberSync('key1', callback);
+		const result2 = storage.rememberSync('key1', callback);
 
 		expect(result1).toBe('computed value');
 		expect(result2).toBe('computed value');

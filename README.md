@@ -133,7 +133,12 @@ storage.increment('counter', 5);  // +5
 storage.decrement('counter', 2);  // -2
 
 // Remember (récupère ou calcule)
-const data = storage.remember('key', () => {
+const data = await storage.remember('key', async() => {
+  return fetchAPIData();
+}, 60); // Cache pendant 60 minutes
+
+// Remember synchrone
+const data = storage.rememberSync('key', () => {
   return expensiveOperation();
 }, 60); // Cache pendant 60 minutes
 

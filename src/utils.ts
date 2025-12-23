@@ -22,7 +22,7 @@ export class StorageUtils extends StorageCore implements FluidStorageUtils
 		return this.increment(key, -value);
 	}
 
-	public remember(key: string, callback: () => any, expire?: number): any {
+	public rememberSync(key: string, callback: () => any, expire?: number): any {
 		const value = this.get(key);
 
 		if (value !== null) {
@@ -30,6 +30,19 @@ export class StorageUtils extends StorageCore implements FluidStorageUtils
 		}
 
 		const newValue = typeof callback === 'function' ? callback() : callback;
+		this.set(key, newValue, expire);
+
+		return newValue;
+	}
+
+	public async remember<T>(key: string, callback: () => Promise<T>, expire?: number): Promise<T> {
+      	const value = this.get(key);
+
+		if (value !== null) {
+			return value;
+		}
+
+		const newValue = typeof callback === 'function' ? await callback() : callback;
 		this.set(key, newValue, expire);
 
 		return newValue;

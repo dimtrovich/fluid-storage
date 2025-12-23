@@ -6,7 +6,7 @@ const storage = init('advancedApp');
 console.log('=== Advanced Usage Examples ===');
 
 // 1. remember - Récupère ou calcule et stocke
-const heavyData = storage.remember('heavyData', () => {
+const heavyData = storage.rememberSync('heavyData', () => {
     console.log('Computing heavy data...');
     return { computed: Date.now(), items: Array(1000).fill('data') };
 });
