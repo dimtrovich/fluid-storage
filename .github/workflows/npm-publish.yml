@@ -1,0 +1,81 @@
+name: Publish to npm on Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  test-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write  # Nécessaire pour l'authentification sécurisée npm
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Récupère tous les commits pour les tags
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          registry-url: 'https://registry.npmjs.org/'
+
+      - name: Cache npm dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            npm-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build package
+        run: npm run build
+
+      - name: Verify build output
+        run: |
+          echo "Fichiers dans dist/:"
+          ls -la dist/
+          echo "Taille du bundle:"
+          du -h dist/*.js
+
+      - name: Dry run publication check
+        run: npm run check-publish
+
+      - name: Extract version from tag
+        id: get_version
+        run: |
+          # Extrait la version du tag (supprime 'v' si présent)
+          RAW_TAG="${GITHUB_REF#refs/tags/}"
+          VERSION="${RAW_TAG#v}"
+          echo "raw_tag=$RAW_TAG" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Tag original: $RAW_TAG"
+          echo "Version extraite: $VERSION"
+
+      - name: Validate version match
+        run: |
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          TAG_VERSION="${{ steps.get_version.outputs.version }}"
+          echo "Version dans package.json: $PACKAGE_VERSION"
+          echo "Version du tag: $TAG_VERSION"
+
+          if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then
+            echo "❌ ERREUR: Les versions ne correspondent pas!"
+            echo "Le tag GitHub ($TAG_VERSION) doit correspondre à package.json ($PACKAGE_VERSION)"
+            exit 1
+          fi
+          echo "✅ Les versions correspondent!"
+
+      - name: Publish to npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
