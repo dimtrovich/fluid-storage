@@ -137,3 +137,4 @@ declare const _default: {
 };
 
 export { BaseAdapter, CookieStorageAdapter, LocalStorageAdapter, SessionStorageAdapter, _default as default, init };
+export type { FluidStorage, StorageAdapter, StorageType };
